@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vector Capabilities Reference</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f2;color:#1a1a18;padding:2rem;max-width:800px;margin:0 auto}
+h1{font-size:22px;font-weight:500;margin-bottom:0.5rem;color:#1a1a18}
+.subtitle{font-size:14px;color:#888780;margin-bottom:1.5rem}
+.search-bar{display:flex;align-items:center;gap:8px;margin-bottom:1.5rem;padding:0 0 1rem;border-bottom:1px solid #d3d1c7}
+.search-bar input{flex:1;padding:8px 12px;border:1px solid #b4b2a9;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;outline:none}
+.search-bar input:focus{border-color:#7f77dd}
+.search-icon{font-size:18px;color:#888780}
+.section{margin-bottom:1rem;border:1px solid #d3d1c7;border-radius:12px;overflow:hidden}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#ebe9e2;cursor:pointer;user-select:none}
+.section-header:hover{background:#d3d1c7}
+.section-title{font-size:15px;font-weight:500;color:#1a1a18;display:flex;align-items:center;gap:8px}
+.section-icon{font-size:18px}
+.count-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:#fff;border:1px solid #b4b2a9;color:#5f5e5a}
+.chevron{font-size:14px;color:#888780;transition:transform 0.2s;display:inline-block}
+.chevron.open{transform:rotate(180deg)}
+.section-body{display:none;padding:12px 16px}
+.section-body.open{display:block}
+.subsection{margin-bottom:8px}
+.subsection-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fff;border:1px solid #d3d1c7;border-radius:8px;cursor:pointer;margin-bottom:4px}
+.subsection-header:hover{background:#f1efe8}
+.subsection-title{font-size:13px;font-weight:500;color:#1a1a18}
+.subsection-body{display:none;padding:8px 12px;background:#fff;border:1px solid #d3d1c7;border-radius:8px}
+.subsection-body.open{display:block}
+.item{font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:#5f5e5a;padding:4px 0;border-bottom:1px solid #f1efe8;display:flex;align-items:center;justify-content:space-between}
+.item:last-child{border-bottom:none}
+.item:hover{color:#1a1a18}
+.item.highlight{background:#fef9c3;color:#1a1a18;padding:4px 4px;border-radius:4px}
+.copy-btn{font-size:10px;padding:2px 6px;border:1px solid #b4b2a9;border-radius:4px;background:transparent;color:#888780;cursor:pointer;opacity:0;transition:opacity 0.1s}
+.item:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:#f1efe8}
+.no-results{font-size:14px;color:#888780;padding:1rem;text-align:center}
+@media(prefers-color-scheme:dark){
+  body{background:#1a1a18;color:#f1efe8}
+  h1{color:#f1efe8}
+  .search-bar input{background:#2c2c2a;color:#f1efe8;border-color:#444441}
+  .search-bar{border-bottom-color:#444441}
+  .section{border-color:#444441}
+  .section-header{background:#2c2c2a}
+  .section-header:hover{background:#444441}
+  .section-title{color:#f1efe8}
+  .count-badge{background:#2c2c2a;border-color:#444441;color:#b4b2a9}
+  .subsection-header{background:#2c2c2a;border-color:#444441}
+  .subsection-header:hover{background:#3a3a38}
+  .subsection-title{color:#f1efe8}
+  .subsection-body{background:#2c2c2a;border-color:#444441}
+  .item{color:#b4b2a9;border-bottom-color:#3a3a38}
+  .item:hover{color:#f1efe8}
+  .item.highlight{background:#3a3820;color:#f1efe8}
+  .copy-btn{border-color:#444441;color:#888780}
+  .copy-btn:hover{background:#444441}
+}
+</style>
+</head>
+<body>
+<h1>🤖 Vector capabilities reference</h1>
+<p class="subtitle">Behaviors, animation triggers, and raw animations — offline reference</p>
+<div class="search-bar">
+  <span class="search-icon">🔍</span>
+  <input type="text" id="search" placeholder="Search behaviors, triggers, animations..." oninput="filterAll()">
+</div>
+<div id="content"></div>
+<script>
+const data = {
+  behaviors: {
+    "Motion & navigation": ["drive_straight","drive_off_charger","drive_on_charger","go_to_pose","turn_in_place","pop_a_wheelie"],
+    "Head / lift / posture": ["set_head_angle","set_lift_height"],
+    "Vision & tracking": ["find_faces","turn_towards_face","look_around_in_place"],
+    "Cube / object manipulation": ["dock_with_cube","go_to_object","pickup_object","place_object_on_ground_here","roll_cube","roll_visible_cube"],
+    "Speech / expression": ["say_text","say_localized_text","set_eye_color"],
+    "System / settings / debug": ["app_intent","change_locale","conn","force_async","grpc_interface","robot","update_settings"]
+  },
+  triggers: {
+    "Charger / docking": ["ChargerDockingAlreadyHere","ChargerDockingDrivingEnd","ChargerDockingDrivingLoop","ChargerDockingDrivingStart","ChargerDockingFailure","ChargerDockingLeftTurn","ChargerDockingRaiseLift","ChargerDockingRequest","ChargerDockingRequestGetout","ChargerDockingRequestPickup","ChargerDockingRequestWaitLoop","ChargerDockingRightTurn","ChargerDockingSearchAfterCompletedSearch","ChargerDockingSearchSingleTurn","ChargerDockingSearchSingleTurnEnd","ChargerDockingSearchWaitForImages","ChargerDockingSettle","ChargerDockingSevereRequest","ChargerDockingSevereRequestGetout","ChargerDockingSorryButLowBattery","ChargerReaction","LowlightChargerSearchGetin","LowlightChargerSearchLoop","LowlightChargerSearchGetout"],
+    "Face / human interaction": ["AlreadyAtFace","ComeHereStart","ComeHereSuccess","EyeContactLookLoop","FoundFace","GazingLookAtFacesGetInLeft","GazingLookAtFacesGetInRight","GazingLookAtFacesTurnLeft","GazingLookAtFacesTurnRight","InteractWithFaceTrackingIdle","InteractWithFacesInitialNamed","InteractWithFacesInitialUnnamed","LookAtUserEndearingly","MeetVictorConfusion","MeetVictorGetIn","MeetVictorLookFace","MeetVictorLookFaceInterrupt","MeetVictorSayName","MeetVictorSayNameAgain","MeetVictorSawWrongFace","MeetVictorDuplicateName","PettingLevel1","PettingLevel2","PettingLevel3","PettingLevel4","PettingLevel1Getout","PettingLevel2Getout","PettingLevel3Getout","PettingLevel4Getout","PettingBlissLoop","PettingBlissGetout","ReactToGoodBye","ReactToGoodMorning","ReactToGoodNight","ReactToGreeting","GreetAfterLongTime"],
+    "Cube / object interaction": ["ConnectToCubeFailure","ConnectToCubeGetIn","ConnectToCubeLoop","ConnectToCubeLostConnection","ConnectToCubeSuccess","CubePounceBackup","CubePounceDriveGetIn","CubePounceDriveLoop","CubePounceDriveGetOut","CubePounceFake","CubePounceGetIn","CubePounceGetOutBored","CubePounceGetReady","CubePounceGetUnready","CubePounceIdleLiftDown","CubePounceIdleLiftUp","CubePounceLoseHand","CubePounceLoseSession","CubePouncePounceClose","CubePouncePounceNormal","CubePounceReactToCube","CubePounceWinHand","CubePounceWinSession","FetchCubeFailure","FetchCubeSetDown","FetchCubeSuccess","FindCubeReactToCube","FindCubeTurns","FindCubeWaitLoop","PickupCubePreperation","PickupCubeRetry","PickupCubeSuccess","PlaceCubeByChargerFail","PlaceCubeByChargerReactToCharger","PlaceCubeByChargerSuccess","PopAWheelieInitial","PopAWheeliePreActionNamedFace","PopAWheeliePreActionUnnamedFace","PopAWheelieRealign","PopAWheelieRetry","RollBlockRealign","RollBlockRetry","RollBlockSuccess"],
+    "Fist bump": ["FistBumpIdle","FistBumpRequestOnce","FistBumpRequestRetry","FistBumpSuccess","FistBumpLeftHanging"],
+    "Feedback / emotion": ["Feedback_GoodRobot","Feedback_BadRobot","Feedback_ShutUp","Feedback_BeQuiet","Feedback_Apology","Feedback_ILoveYou","Feedback_MeanWords","FrustratedByFailureMajor"],
+    "Exploring / idle": ["ExploringHuhClose","ExploringHuhFar","ExploringLookAround","ExploringLookAtHuman","ExploringQuickScan","ExploringReactToHandGetIn","ExploringReactToHandDrive","ExploringReactToHandLift","ExploringReactToHandReaction","ExploringReactToHandGetOut","ExploringScanToLeft","ExploringScanToRight","ExploringScanCenterFromLeft","ExploringScanCenterFromRight","LookAround","LookInPlaceForFacesBodyPause_Active","LookInPlaceForFacesBodyPause","LookInPlaceForFacesHeadMovePause","NothingToDoBoredIdle","ObservingIdleEyesOnly","ObservingIdleWithHeadLookingStraight","ObservingIdleWithHeadLookingUp"],
+    "React to environment": ["ReactToCliff","ReactToCliffBack","ReactToCliffBackLeft","ReactToCliffBackRight","ReactToCliffFront","ReactToCliffFrontLeft","ReactToCliffFrontRight","ReactToCliffTurnLeft60","ReactToCliffTurnLeft120","ReactToCliffTurnLeft180","ReactToCliffTurnRight60","ReactToCliffTurnRight120","ReactToCliffTurnRight180","ReactToDarkness","ReactToHabitat","ReactToMotionLeft","ReactToMotionTurnLeft","ReactToMotionRight","ReactToMotionTurnRight","ReactToMotionUp","ReactToMotionTurnUp","ReactToMotionLeftGetout","ReactToMotionRightGetout","ReactToMotionUpGetout","ReactToObstacle","ReactToPerchedOnBlock","ReactToPickupInitial","ReactToPickupLoop","ReactToPutDown","ReactToShake_GetIn","ReactToUnexpectedMovement","StuckOnEdgeGetIn","StuckOnEdgeIdle"],
+    "Blackjack game": ["BlackJack_Deal","BlackJack_GoodLuck","BlackJack_GetIn","BlackJack_Idle","BlackJack_Quit","BlackJack_Response","BlackJack_RtpIdle","BlackJack_RtpPlayerNo","BlackJack_RtpPlayerYes","BlackJack_RtpRequest","BlackJack_RtpTimeOut","BlackJack_SpeechGetIn","BlackJack_SpeechShortStatement","BlackJack_Spread","BlackJack_Swipe","BlackJack_VictorBlackJackLose","BlackJack_VictorBlackJackWin","BlackJack_VictorBust","BlackJack_VictorLose","BlackJack_VictorPush","BlackJack_VictorWin"],
+    "Dance / music": ["DanceBeatCantDoThat","DanceBeatEyeHold","DanceBeatGetIn","DanceBeatGetOut","DanceBeatGetReady","DanceBeatListening","DanceBeatNoBeatDetected"],
+    "Sleep / wake": ["GoToSleepGetIn","GoToSleepOff","GoToSleepSleeping","ConnectWakeUp","ConnectWakeUpLights","InitialWakeUp","OnboardingWakeUp","OnboardingWakeWordGetIn","OnboardingWakeWordSuccess","WakeupGetout"],
+    "Seasonal / special": ["SeasonalHappyHolidays","SeasonalHappyNewYear"],
+    "Errors / edge cases": ["InvalidAnimTrigger","AudioOnlyHuh","ICantDoThat","NoCloudGetIn","NoCloudIcon","NoWifiGetIn","NoWifiSearching","NoWifiIcon","HighTemperatureWarningFace","ReactToUnclaimedIntent","ReactToUnclaimedIntentInAir"],
+    "Onboarding": ["OnboardingComeHere","OnboardingComeHereGetOut","OnboardingCubeDriveGetIn","OnboardingCubeDriveGetOut","OnboardingCubeDriveLoop","OnboardingCubeHuh","OnboardingDriveOffCharger","OnboardingDriveOffCharger_1p0","OnboardingLookAtUserGetOut_1p0","OnboardingLookAround","OnboardingLookDown","OnboardingLookForCube","OnboardingLookAtPhoneUp","OnboardingLookAtPhoneLoop","OnboardingLookAtPhoneDown","OnboardingLookAtUser","OnboardingListenGetIn","OnboardingListenGetOut","OnboardingReactToFaceHappy"]
+  }
+};
+
+const allAnims = ["anim_reacttocliff_stuckonedge_alert_left_01","anim_slowpoke_loop_04","anim_observing_sides_area_01","anim_message_deleted_short_01","anim_heldonpalm_putdown_relaxed_01","anim_fastbump_loop_01","anim_hiking_driving_start_04","anim_eyecontact_getout_01_head_angle_-20","anim_lookinplaceforfaces_keepalive_long_03","anim_volume_stage_01","anim_keepaway_pounce_shake_02","anim_keepalive_eyes_01_updown","anim_tts_loop_02","anim_blackjack_speech_tts_01","anim_eyecontact_left_contact_01_head_angle_20","anim_reacttoblock_react_01_head_angle_40","anim_blackjack_victorbust_01","anim_vc_reaction_nofaceheardyou_01","anim_reacttocliff_stuckonedge_alert_right_01","anim_reacttocliff_turnleft_60_01","anim_observe_oncharger_getout_01","anim_explorer_planning_getin_02","anim_eyepose_sad_instronspect","anim_launch_reacttocube","anim_fistbump_requesttwice_01","anim_keepaway_hit_reaction_01","anim_gazing_lookatsurfaces_getin_left_01_head_angle_20","anim_explorer_scan_short_01","anim_rtsound_oncharger_observe_behind_left_01","anim_fistbump_requestonce_01","anim_fistbump_requestonce_02","anim_fistbump_getin_01","anim_fistbump_success_01","anim_fistbump_success_02","anim_fistbump_success_03","anim_fistbump_fail_01","anim_fistbump_idle_01","anim_fistbump_idle_02","anim_fistbump_idle_03","anim_fistbump_requestoncelong_01","anim_eyepose_angry","anim_eyepose_sad","anim_eyepose_sad_up","anim_eyepose_sad_down","anim_eyepose_sad_down01","anim_eyepose_happy","anim_eyepose_scared","anim_eyepose_shocked","anim_eyepose_frustrated","anim_eyepose_furious","anim_eyepose_hurt","anim_eyepose_bliss","anim_eyepose_joy","anim_eyepose_awe","anim_eyepose_curious","anim_eyepose_concerned","anim_eyepose_worried","anim_eyepose_unsure","anim_eyepose_bothered","anim_eyepose_suspicious","anim_eyepose_squint","anim_eyepose_scrutinizing","anim_eyepose_startled","anim_eyepose_determined","anim_eyepose_captivated","anim_eyepose_focused","anim_eyepose_asleep","anim_eyepose_blink","anim_eyepose_blink_low","anim_eyepose_blink_high","anim_eyepose_blink_bd_l","anim_eyepose_blink_bd_r","anim_eyepose_normal_l","anim_eyepose_normal_r","anim_eyepose_normal_l_push","anim_eyepose_normal_r_push","anim_eyepose_default","anim_eyepose_all_faces","anim_greeting_hello_01","anim_greeting_hello_02","anim_greeting_happy_03","anim_greeting_happy_03_head_angle_40","anim_greeting_happy_03_head_angle_20","anim_greeting_happy_03_head_angle_-20","anim_greeting_goodbye_01","anim_greeting_goodbye_02","anim_greeting_goodmorning_01","anim_greeting_goodmorning_02","anim_greeting_goodnight_01","anim_greeting_goodnight_02","anim_greeting_imhome_01","anim_dancebeat_getin_01","anim_dancebeat_getin_02","anim_dancebeat_getout_01","anim_dancebeat_getout_02","anim_dancebeat_getready_01","anim_dancebeat_headnod_01","anim_dancebeat_headnod_down_01","anim_dancebeat_headlift_01","anim_dancebeat_headliftbody_fwd_01","anim_dancebeat_headliftbody_left_small_01","anim_dancebeat_headliftbody_left_med_01","anim_dancebeat_headliftbody_left_large_01","anim_dancebeat_headliftbody_right_small_01","anim_dancebeat_headliftbody_right_med_01","anim_dancebeat_headliftbody_right_large_01","anim_dancebeat_headliftbody_back_01","anim_dancebeat_eyebeat_01","anim_dancebeat_eyebeat_left_01","anim_dancebeat_eyebeat_right_01","anim_dancebeat_eyehold_01","anim_dancebeat_listening_01","anim_dancebeat_listening_02","anim_dancebeat_listening_03","anim_dancebeat_pivot_left_01","anim_dancebeat_pivot_right_01","anim_dancebeat_scoot_left_01","anim_dancebeat_scoot_right_01","anim_dancebeat_idle_01","anim_dancebeat_cantdothat_01","anim_dancebeat_quit_01","anim_chargerdocking_comeoff_left_01","anim_chargerdocking_comeoff_left_02","anim_chargerdocking_comeoff_right_01","anim_chargerdocking_comeoff_right_02","anim_chargerdocking_comeoff_straight_01","anim_chargerdocking_comeoff_straight_02","anim_chargerdocking_comeoff_straight_03","anim_chargerdocking_request1_01","anim_chargerdocking_requestgetout_01","anim_chargerdocking_requestwait_01","anim_chargerdocking_liftup_01","anim_chargerdocking_leftturn_01","anim_chargerdocking_leftturn_all","anim_chargerdocking_rightturn_01","anim_chargerdocking_rightturn_all","anim_chargerdocking_settle_01","anim_chargerdocking_pickup_01","anim_chargerdocking_reaction_01","anim_chargerdocking_severerequest_01","anim_chargerdocking_severergetout_01","anim_chargerdocking_severergetout_02","anim_chargerdocking_searchforcharger_01","anim_chargerdocking_searchforcharger_canthelp","anim_chargerdocking_searchforchargerturns_01","anim_chargerdocking_searchforchargerturns_02","anim_chargerdocking_searchforchargerturns_03","anim_chargerdocking_searchforchargerturns_default_01","anim_chargerdocking_searchforchargerturns_default_02","anim_chargerdocking_searchforchargerturns_default_03","anim_chargerdocking_searchforchargerturns_default_loop_01","anim_chargerdocking_searchforchargerturns_default_loop_02","anim_chargerdocking_searchforchargerturns_default_getout","anim_chargerdocking_comeoff_binaryeyes_01","anim_keepaway_getout_frustrated_01","anim_pounce_success_01","anim_pounce_success_02","anim_pounce_success_03","anim_pounce_success_04","anim_pounce_fail_01","anim_pounce_fail_02","anim_pounce_fail_03","anim_pounce_fail_04","anim_reacttoblock_happydetermined_01","anim_reacttoblock_happydetermined_02","anim_reacttocliff_wheely_01","anim_reacttocliff_wheely_02","anim_reacttocliff_wheely_03","anim_feedback_apology_01","anim_feedback_apology_02","anim_feedback_badrobot_01","anim_feedback_badrobot_02","anim_feedback_goodrobot_01","anim_feedback_goodrobot_02","anim_feedback_iloveyou_01","anim_feedback_iloveyou_02","anim_feedback_meanwords_01","anim_feedback_meanwords_02","anim_feedback_shutup_01","anim_feedback_shutup_02","anim_feedback_bequiet_01","anim_feedback_bequiet_02","anim_onboarding_reacttoface_happy_01","anim_onboarding_reacttoface_happy_01_head_angle_20","anim_onboarding_reacttoface_happy_01_head_angle_40","anim_onboarding_reacttoface_happy_01_head_angle_-20","anim_holiday_hh_lights_01","anim_holiday_hh_lights_02","anim_holiday_hny_fireworks_01","anim_holiday_hyn_confetti_01","anim_nowifi_getin_01","anim_nowifi_getin_02","anim_nowifi_icon_01","anim_nowifi_signal_01","anim_nowifi_trouble_icon_01","anim_nocloud_icon_01","anim_reacttocliff_edge_01","anim_reacttocliff_edge_02","anim_reacttocliff_edge_03","anim_reacttocliff_edge_04","anim_reacttocliff_stop_01","anim_reacttocliff_stop_02","anim_reacttocliff_huh_01"];
+
+function getFamilies(anims) {
+  const families = {};
+  anims.forEach(a => {
+    const parts = a.split('_');
+    let family = 'other';
+    if(a.startsWith('anim_') && parts.length >= 3) family = 'anim_' + parts[1];
+    else family = 'special';
+    if(!families[family]) families[family] = [];
+    families[family].push(a);
+  });
+  return families;
+}
+data.animations = getFamilies(allAnims);
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1200);
+  });
+}
+
+function makeItem(name, query) {
+  const hi = query && name.toLowerCase().includes(query.toLowerCase());
+  return `<div class="item${hi?' highlight':''}">
+    <span>${name}</span>
+    <button class="copy-btn" onclick="copyText('${name}',this)">copy</button>
+  </div>`;
+}
+
+function makeSubsection(title, items, query) {
+  const filtered = query ? items.filter(i => i.toLowerCase().includes(query.toLowerCase())) : items;
+  if(filtered.length === 0) return '';
+  const id = 'sub_' + title.replace(/[^a-z0-9]/gi,'_');
+  return `<div class="subsection">
+    <div class="subsection-header" onclick="toggleSub('${id}')">
+      <span class="subsection-title">${title}</span>
+      <span style="font-size:12px;color:#888780">${filtered.length} <span id="chev_${id}">▼</span></span>
+    </div>
+    <div class="subsection-body" id="${id}">
+      ${filtered.map(i => makeItem(i, query)).join('')}
+    </div>
+  </div>`;
+}
+
+function makeSection(icon, title, groups, query) {
+  let body = '';
+  let total = 0;
+  Object.entries(groups).forEach(([k,v]) => {
+    const s = makeSubsection(k, v, query);
+    if(s) { body += s; total += (query ? v.filter(i=>i.toLowerCase().includes(query.toLowerCase())).length : v.length); }
+  });
+  if(query && total === 0) return '';
+  const id = 'sec_' + title.replace(/[^a-z0-9]/gi,'_');
+  const open = query ? ' open' : '';
+  return `<div class="section">
+    <div class="section-header" onclick="toggleSec('${id}')">
+      <span class="section-title"><span class="section-icon">${icon}</span>${title}</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="count-badge">${total}</span>
+        <span class="chevron${open}" id="chevSec_${id}">▼</span>
+      </span>
+    </div>
+    <div class="section-body${open}" id="${id}">${body}</div>
+  </div>`;
+}
+
+function toggleSec(id) {
+  document.getElementById(id).classList.toggle('open');
+  document.getElementById('chevSec_'+id).classList.toggle('open');
+}
+function toggleSub(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function render(query) {
+  const el = document.getElementById('content');
+  let html = '';
+  html += makeSection('⚙️', 'Behaviors', data.behaviors, query);
+  html += makeSection('⚡', 'Animation triggers', data.triggers, query);
+  html += makeSection('▶️', 'Animations (raw IDs)', data.animations, query);
+  if(!html.trim()) html = '<div class="no-results">No results found.</div>';
+  el.innerHTML = html;
+}
+
+function filterAll() {
+  render(document.getElementById('search').value.trim());
+}
+
+render('');
+</script>
+</body>
+</html>
