@@ -6,6 +6,7 @@ import anki_vector
 import os
 from anki_vector.util import degrees
 import time
+import numpy as np
 
 model_path = "gesture_recognizer.task"
 
@@ -22,14 +23,17 @@ robot = anki_vector.Robot()
 robot.connect()
 print("Vector online!")
 
-camera = cv2.VideoCapture(0)
+robot.camera.init_camera_feed()
 print("Gesture control online... press ESC to quit")
 
 last_gesture = ""
 
 with GestureRecognizer.create_from_options(options) as recognizer:
     while True:
-        ret, frame = camera.read()
+        image = robot.camera.latest_image
+        if image is None:
+            continue
+        frame = cv2.cvtColor(np.array(image.raw_image), cv2.COLOR_RGB2BGR)
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
         result = recognizer.recognize(mp_image)
@@ -75,8 +79,7 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                 elif gesture == "ILoveYou":
                     robot.behavior.say_text("Hi human! I love you too!")
 
-        # Draw hand landmarks
-        if result.hand_landmarks:
+        if hasattr(result, "hand_landmarks") and result.hand_landmarks:
             for hand_landmarks in result.hand_landmarks:
                 for landmark in hand_landmarks:
                     h, w, _ = frame.shape
@@ -103,7 +106,7 @@ with GestureRecognizer.create_from_options(options) as recognizer:
         if cv2.waitKey(1) & 0xFF == 27:
             break
 
-camera.release()
+robot.camera.close_camera_feed()
 cv2.destroyAllWindows()
 robot.disconnect()
 print("Vector offline.")
