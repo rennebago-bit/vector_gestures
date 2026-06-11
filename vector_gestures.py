@@ -50,32 +50,27 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                 # Vector responses
                 if gesture == "Thumb_Up":
                     robot.anim.play_animation('anim_pounce_success_02')
-                    robot.behavior.say_text("My pleasure!")
+                    robot.behavior.say_text("Cool beans!")
                 elif gesture == "Victory":
                     robot.behavior.say_text("you cool")
                 elif gesture == "Open_Palm":
-                    robot.behavior.say_text("Hola!")
+                    robot.behavior.say_text("Hello!")
                     robot.anim.play_animation('anim_greeting_hello_01')
                     time.sleep(4)
-                elif gesture == "Pointing_Left":
-                    robot.behavior.say_text("To the left!")
-                    turn_in_place = robot.behavior.turn_in_place(degrees(90))
-                    turn_in_place.wait_for_completed()
-                    robot.anim.play_animation('anim_eyepose_happy_01')
-                elif gesture == "Pointing_Right":
-                    robot.behavior.say_text("Turn the right!")
-                    turn_in_place = robot.behavior.turn_in_place(degrees(-90))
-                    turn_in_place.wait_for_completed()
-                    robot.anim.play_animation('anim_eyepose_happy_01')
                 elif gesture == "Closed_Fist":
                     robot.behavior.drive_off_charger()
                     robot.behavior.set_head_angle(degrees(20.0))
                     robot.behavior.set_lift_height(0.0)
                     robot.behavior.say_text("Fist bump!")
-                    time.sleep(2)
-                    robot.behavior.set_lift_height(1.0)
                     time.sleep(0.5)
+                    robot.behavior.set_lift_height(0.8)
+                    time.sleep(0.5)
+                    robot.behavior.set_lift_height(0.3)
+                    time.sleep(0.3)
+                    robot.behavior.set_lift_height(0.8)
+                    time.sleep(0.3)
                     robot.behavior.set_lift_height(0.0)
+                    robot.anim.play_animation('anim_pounce_success_02')
                 elif gesture == "ILoveYou":
                     robot.behavior.say_text("Hi human! I love you too!")
 
