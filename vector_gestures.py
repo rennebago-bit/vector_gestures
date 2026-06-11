@@ -7,6 +7,7 @@ import os
 from anki_vector.util import degrees
 import time
 import numpy as np
+from anki_vector.util import degrees, distance_mm, speed_mmps
 
 model_path = "gesture_recognizer.task"
 
@@ -57,6 +58,13 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                     robot.behavior.say_text("Hello!")
                     robot.anim.play_animation('anim_greeting_hello_01')
                     time.sleep(4)
+                elif gesture == "Pointing_Up":
+                    robot.behavior.say_text("Starting patrol!")
+                    robot.behavior.drive_off_charger()
+                    robot.behavior.drive_straight(distance_mm(200), speed_mmps(100))
+                    robot.behavior.look_around_in_place()
+                    robot.behavior.drive_straight(distance_mm(-200), speed_mmps(100))
+                    robot.behavior.say_text("Counter is clear!")
                 elif gesture == "Closed_Fist":
                     robot.behavior.drive_off_charger()
                     robot.behavior.set_head_angle(degrees(20.0))
