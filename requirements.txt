@@ -1,0 +1,4 @@
+wirepod-vector-sdk
+opencv-python
+mediapipe
+numpy

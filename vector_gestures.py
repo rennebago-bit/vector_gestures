@@ -9,7 +9,7 @@ import time
 import numpy as np
 from anki_vector.util import degrees, distance_mm, speed_mmps
 
-model_path = "gesture_recognizer.task"
+model_path = os.path.join(os.path.dirname(__file__), "models", "gesture_recognizer.task")
 
 # Setup gesture recognizer
 base_options = mp.tasks.BaseOptions(model_asset_path=model_path)
@@ -29,6 +29,7 @@ print("Gesture control online... press ESC to quit")
 
 last_gesture = ""
 
+# Gestures
 with GestureRecognizer.create_from_options(options) as recognizer:
     while True:
         image = robot.camera.latest_image
@@ -59,6 +60,8 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                     robot.anim.play_animation('anim_greeting_hello_01')
                     time.sleep(4)
                 elif gesture == "Pointing_Up":
+                    if robot.status.is_on_charger:
+                        robot.behavior.drive_off_charger()
                     robot.behavior.say_text("Starting patrol!")
                     robot.behavior.drive_off_charger()
                     robot.behavior.drive_straight(distance_mm(200), speed_mmps(100))
@@ -66,21 +69,18 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                     robot.behavior.drive_straight(distance_mm(-200), speed_mmps(100))
                     robot.behavior.say_text("Counter is clear!")
                 elif gesture == "Closed_Fist":
+                  if robot.status.is_on_charger:
                     robot.behavior.drive_off_charger()
-                    robot.behavior.set_head_angle(degrees(20.0))
-                    robot.behavior.set_lift_height(0.0)
-                    robot.behavior.say_text("Fist bump!")
-                    time.sleep(0.5)
-                    robot.behavior.set_lift_height(0.8)
-                    time.sleep(0.5)
-                    robot.behavior.set_lift_height(0.3)
-                    time.sleep(0.3)
-                    robot.behavior.set_lift_height(0.8)
-                    time.sleep(0.3)
+                    robot.anim.play_animation('anim_fistbump_getin_01')
+                    time.sleep(1)
+                    robot.anim.play_animation('anim_fistbump_requestonce_01')
+                    time.sleep(2)
+                    robot.anim.play_animation('anim_fistbump_success_01')
                     robot.behavior.set_lift_height(0.0)
                     robot.anim.play_animation('anim_pounce_success_02')
                 elif gesture == "ILoveYou":
-                    robot.behavior.say_text("Hi human! I love you too!")
+                    robot.behavior.say_text("Aw, thanks!")
+                    robot.anim.play_animation('anim_pounce_success_02')
 
         if hasattr(result, "hand_landmarks") and result.hand_landmarks:
             for hand_landmarks in result.hand_landmarks:

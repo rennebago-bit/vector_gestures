@@ -2,6 +2,27 @@
 
 A Python-based gesture control system for the Anki Vector robot using Wire Pod, OpenCV, and MediaPipe. Control your Vector with hand gestures — no cloud required.
 
+## Project layout
+
+- `vector_gestures.py` — main gesture controller
+- `models/` — MediaPipe gesture model
+- `examples/` — small connection, camera, face, and hand tests
+- `utilities/` — animation discovery and robot data tools
+- `docs/` — Vector SDK references and capability lists
+- `tests/` — Python learning experiments
+
+Install dependencies from the repository root:
+
+```bash
+python3 -m pip install -r requirements.txt
+```
+
+Run the main controller from the repository root:
+
+```bash
+python3 vector_gestures.py
+```
+
 Built and documented by a first-time Python learner in a single day.
 
 ---
