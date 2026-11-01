@@ -1,4 +1,4 @@
-# 🤖 Vector Gesture Bot — Setup Guide
+# 🤖 Vector Gestures — Setup Guide
 
 A Python-based gesture control system for the Anki Vector robot using Wire Pod, OpenCV, and MediaPipe. Control your Vector with hand gestures — no cloud required.
 
