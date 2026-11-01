@@ -63,7 +63,6 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                     if robot.status.is_on_charger:
                         robot.behavior.drive_off_charger()
                     robot.behavior.say_text("Starting patrol!")
-                    robot.behavior.drive_off_charger()
                     robot.behavior.drive_straight(distance_mm(200), speed_mmps(100))
                     robot.behavior.look_around_in_place()
                     robot.behavior.drive_straight(distance_mm(-200), speed_mmps(100))
@@ -81,6 +80,9 @@ with GestureRecognizer.create_from_options(options) as recognizer:
                 elif gesture == "ILoveYou":
                     robot.behavior.say_text("Aw, thanks!")
                     robot.anim.play_animation('anim_pounce_success_02')
+        else:
+            # Allow the same gesture to trigger again after the hand disappears.
+            last_gesture = ""
 
         if hasattr(result, "hand_landmarks") and result.hand_landmarks:
             for hand_landmarks in result.hand_landmarks:
