@@ -9,6 +9,9 @@ A Python-based gesture control system for the Anki Vector robot using Wire Pod, 
 - `examples/` — small connection, camera, face, and hand tests
 - `utilities/` — animation discovery and robot data tools
 - `docs/` — Vector SDK references and capability lists
+- `docs/macos-autostart.md` — start gesture control automatically at login on macOS
+- `docs/windows-autostart.md` — start gesture control automatically at sign-in on Windows
+- `start_vector_gestures.bat` — Windows Task Scheduler launcher
 - `tests/` — Python learning experiments
 
 Install dependencies from the repository root:
